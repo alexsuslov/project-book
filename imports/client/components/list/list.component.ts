@@ -8,7 +8,7 @@ import {Project} from "../../../collections/projects.collection";
 
 @Component({
     selector: 'project-list',
-    template
+    template,
 })
 export class ListComponent {
     projects$: Observable<Project[]>;
@@ -30,8 +30,10 @@ export class ListComponent {
                 if (searchText)
                     searchText = decodeURI(searchText.replace('%23', '#'));
 
-                return this.projectService.search({text: searchText}, {sort: {'rating.count': -1, 'rating.average': -1, created_at: -1}}).zone();
-            })
+                return this.projectService
+                  .search({ text: searchText }, {sort: {'rating.count': -1, 'rating.average': -1, created_at: -1}})
+                  .zone();
+            });
     }
 
     get isGridView(){
