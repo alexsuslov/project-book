@@ -46,8 +46,8 @@ export class CardComponent extends AbstractComponent {
         })
       .subscribe();
 
-    setTimeout(()=> { // If project not found getById silent.
-      this.viewMode == ViewMode.LOADING && (this.viewMode = ViewMode.DENY);
+    setTimeout(() => { // If project not found getById silent.
+      this.viewMode === ViewMode.LOADING && (this.viewMode = ViewMode.DENY);
     }, 3000);
 
     this.sub(sub);

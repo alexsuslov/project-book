@@ -112,7 +112,7 @@ var Plugins;
         // Alternative to use On Document Ready and creating the instance immediately
         //$(document).on('focus.autosize-input', 'input[data-autosize-input]', function (e)
         //{
-        //	$(this).autosizeInput();
+        //  $(this).autosizeInput();
         //});
     })(jQuery);
 })(Plugins || (Plugins = {}));

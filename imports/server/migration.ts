@@ -9,7 +9,7 @@ let MigrationSchema = new SimpleSchema({
   },
   created_at: {
     type: Date,
-    autoValue: function (): Date | Object {
+    autoValue: function () : Date | Object {
       if (this.isInsert) {
         return new Date();
       } else if (this.isUpsert) {
@@ -73,7 +73,9 @@ const rules = {
 };
 
 Meteor.startup(() => {
-  let migrations = Migrations.find({}, {fields: {key: 1}}).map((m) => m.key);
+  let migrations = Migrations
+    .find({}, {fields: {key: 1}})
+    .map(m => m.key);
   let needMigrate = _.difference(_.keys(rules), migrations);
   _.each(needMigrate, (key)=> {
     rules[key]();

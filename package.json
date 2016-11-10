@@ -31,6 +31,6 @@
   },
   "scripts": {
     "start": "meteor --settings settings.json",
-    "lint": "tslint -c tslint.json ./"
+    "lint": "tslint -c tslint.json ./**/*.ts"
   }
 }
