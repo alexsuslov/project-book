@@ -34,7 +34,7 @@ Migrations.attachSchema(MigrationSchema);
 
 const rules = {
   'first-migration':  () => {
-    const user = Users.findOne({'profile.level': UserLevels.ADMIN});
+    let user = Users.findOne({'profile.level': UserLevels.ADMIN});
     let adminId;
 
     if (!user) {
