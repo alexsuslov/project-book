@@ -1,7 +1,7 @@
-import {Users, UserLevels} from "../collections/users.collection";
-import {Projects} from "../collections/projects.collection";
-import {Tags} from "../collections/tags.collection";
 import * as _ from "lodash";
+import { Users, UserLevels } from "../collections/users.collection";
+import { Projects } from "../collections/projects.collection";
+import { Tags } from "../collections/tags.collection";
 
 let MigrationSchema = new SimpleSchema({
   key: {
@@ -23,18 +23,18 @@ let MigrationSchema = new SimpleSchema({
 
 interface Migration {
   key: string,
-  created_at?: Date
+  created_at ? : Date,
 }
 
 class MigrationsCollection extends Mongo.Collection <Migration> {
 }
 
-export var Migrations = new MigrationsCollection('migrations');
+export const Migrations = new MigrationsCollection('migrations');
 Migrations.attachSchema(MigrationSchema);
 
-var rules = {
-  'first-migration': function () {
-    var user = Users.findOne({'profile.level': UserLevels.ADMIN});
+const rules = {
+  'first-migration':  () => {
+    const user = Users.findOne({'profile.level': UserLevels.ADMIN});
     let adminId;
 
     if (!user) {
@@ -46,21 +46,20 @@ var rules = {
         }
       };
       adminId = Users.insert(user);
-    }
-    else {
+    } else {
       adminId = user._id;
     }
   },
 
-  're-count-tags': function () {
+  're-count-tags': () => {
     Tags.collection.remove({});
 
     Projects.collection.find({})
       .forEach(project => {
         _.each(project.tags, (tag: string) => Tags.inc(tag));
-      })
+      });
   },
-  'reset-rating': function () {
+  'reset-rating':  () => {
     Projects.update({}, {
       '$set': {
         rating: {
@@ -79,6 +78,6 @@ Meteor.startup(() => {
   _.each(needMigrate, (key)=> {
     rules[key]();
     Migrations.insert({key: key});
-    console.log(`Migration "${key}" done`);
+    console.log(`Migration "${key}" done`); // tslint:disable-line
   });
 });

@@ -1,44 +1,51 @@
 import * as _ from "lodash";
-import {Users, UserLevels} from "../collections/users.collection";
+import { Users, UserLevels } from "../collections/users.collection";
 declare var ServiceConfiguration; // Global var from service-configuration package.
-var services = Meteor.settings['oauth'];
+const services = Meteor.settings["oauth"];
 
-_.each(services, (params, name ) => {
-  ServiceConfiguration.configurations.upsert({service: name}, {$set: params})
+_.each(services, (params, name) => {
+  ServiceConfiguration.configurations
+    .upsert({ service: name }, { $set: params });
 });
 
-Accounts.onCreateUser(function (options, user) {
+Accounts.onCreateUser( (options, user) => {
   if (user.services) {
-    var service = _.keys(user.services)[0];
-    var email = user.services[service].email;
+    const service = _.keys(user.services)[0];
+    const email = user.services[service].email;
 
-    if (!email)
+    if (!email) {
       return user;
+    }
 
     options.profile.email = email;
 
     switch (service) {
-      case 'google':
+      case "google":
         options.profile.picture = user.services.google.picture;
         break;
-      case 'facebook':
+      case "facebook":
         options.profile.picture = `http://graph.facebook.com/${user.services.facebook.id}/picture`;
         break;
+      default:
+        throw "no service";
     }
 
     options.profile.email = email;
     options.profile.level = UserLevels.USER;
     user.profile = options.profile;
 
-    var existingUser = Users.findOne({'profile.email': email});
-    if (!existingUser)
+    const existingUser = Users.findOne({"profile.email": email});
+    if (!existingUser) {
       return user;
+    }
 
     // precaution, these will exist from accounts-password if used
-    if (!existingUser.services)
+    if (!existingUser.services) {
       existingUser.services = {resume: {loginTokens: []}};
-    if (!existingUser.services.resume)
+    }
+    if (!existingUser.services.resume) {
       existingUser.services.resume = {loginTokens: []};
+    }
 
     // copy across new service info
     existingUser.services[service] = user.services[service];
